@@ -1,0 +1,87 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.6.2
+2 info using node@v24.13.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:D:\telegram bot habit\frontend\.npmrc
+5 silly config load:file:d:\telegram bot habit\.npmrc
+6 silly config load:file:C:\Users\fqrealicy\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm install
+8 verbose argv "install" "--prefer-online" "--no-audit" "--no-fund" "--cache" "d:\\telegram bot habit\\.npm-cache2"
+9 verbose logfile logs-max:10 dir:d:\telegram bot habit\.npm-cache2\_logs\2026-02-05T00_08_03_030Z-
+10 verbose logfile d:\telegram bot habit\.npm-cache2\_logs\2026-02-05T00_08_03_030Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 silly idealTree buildDeps
+14 silly fetch manifest react@18.3.1
+15 silly packumentCache full:https://registry.npmjs.org/react cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/npm 942ms
+17 http fetch GET 200 https://registry.npmjs.org/react 4919ms (cache miss)
+18 silly fetch manifest react-dom@18.3.1
+19 silly packumentCache full:https://registry.npmjs.org/react-dom cache-miss
+20 http fetch GET 200 https://registry.npmjs.org/react-dom 586ms (cache miss)
+21 silly fetch manifest @vitejs/plugin-react@4.3.4
+22 silly packumentCache full:https://registry.npmjs.org/@vitejs%2fplugin-react cache-miss
+23 http fetch GET 200 https://registry.npmjs.org/@vitejs%2fplugin-react 339ms (cache miss)
+24 silly fetch manifest vite@6.0.7
+25 silly packumentCache full:https://registry.npmjs.org/vite cache-miss
+26 http fetch GET 200 https://registry.npmjs.org/vite 993ms (cache miss)
+27 silly placeDep ROOT @vitejs/plugin-react@ OK for: habit-web@0.1.0 want: 4.3.4
+28 silly placeDep ROOT react@ OK for: habit-web@0.1.0 want: 18.3.1
+29 silly placeDep ROOT react-dom@ OK for: habit-web@0.1.0 want: 18.3.1
+30 silly placeDep ROOT vite@ OK for: habit-web@0.1.0 want: 6.0.7
+31 verbose type system
+32 verbose stack FetchError: Invalid response body while trying to fetch https://registry.npmjs.org/@vitejs%2fplugin-react: EPERM: operation not permitted, unlink 'd:\telegram bot habit\.npm-cache2\_cacache\tmp\9a38cad4'
+32 verbose stack     at C:\Program Files\nodejs\node_modules\npm\node_modules\minipass-fetch\lib\body.js:170:15
+32 verbose stack     at async Response.json (C:\Program Files\nodejs\node_modules\npm\node_modules\minipass-fetch\lib\body.js:75:17)
+32 verbose stack     at async RegistryFetcher.packument (C:\Program Files\nodejs\node_modules\npm\node_modules\pacote\lib\registry.js:98:25)
+32 verbose stack     at async RegistryFetcher.manifest (C:\Program Files\nodejs\node_modules\npm\node_modules\pacote\lib\registry.js:128:23)
+32 verbose stack     at async #fetchManifest (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:1227:20)
+32 verbose stack     at async #nodeFromEdge (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:1065:19)
+32 verbose stack     at async #buildDepStep (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:929:11)
+32 verbose stack     at async Arborist.buildIdealTree (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:182:7)
+32 verbose stack     at async Promise.all (index 1)
+32 verbose stack     at async Arborist.reify (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\reify.js:114:5)
+33 error code EPERM
+34 error syscall unlink
+35 error path d:\telegram bot habit\.npm-cache2\_cacache\tmp\9a38cad4
+36 error errno EPERM
+37 error FetchError: Invalid response body while trying to fetch https://registry.npmjs.org/@vitejs%2fplugin-react: EPERM: operation not permitted, unlink 'd:\telegram bot habit\.npm-cache2\_cacache\tmp\9a38cad4'
+37 error     at C:\Program Files\nodejs\node_modules\npm\node_modules\minipass-fetch\lib\body.js:170:15
+37 error     at async Response.json (C:\Program Files\nodejs\node_modules\npm\node_modules\minipass-fetch\lib\body.js:75:17)
+37 error     at async RegistryFetcher.packument (C:\Program Files\nodejs\node_modules\npm\node_modules\pacote\lib\registry.js:98:25)
+37 error     at async RegistryFetcher.manifest (C:\Program Files\nodejs\node_modules\npm\node_modules\pacote\lib\registry.js:128:23)
+37 error     at async #fetchManifest (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:1227:20)
+37 error     at async #nodeFromEdge (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:1065:19)
+37 error     at async #buildDepStep (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:929:11)
+37 error     at async Arborist.buildIdealTree (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:182:7)
+37 error     at async Promise.all (index 1)
+37 error     at async Arborist.reify (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\reify.js:114:5) {
+37 error   code: 'EPERM',
+37 error   errno: 'EPERM',
+37 error   syscall: 'unlink',
+37 error   path: 'd:\\telegram bot habit\\.npm-cache2\\_cacache\\tmp\\9a38cad4',
+37 error   type: 'system',
+37 error   requiredBy: '.'
+37 error }
+38 error
+38 error The operation was rejected by your operating system.
+38 error It's possible that the file was already in use (by a text editor or antivirus),
+38 error or that you lack permissions to access it.
+38 error
+38 error If you believe this might be a permissions issue, please double-check the
+38 error permissions of the file and its containing directories, or try running
+38 error the command again as root/Administrator.
+39 silly unfinished npm timer reify 1770250083638
+40 silly unfinished npm timer reify:loadTrees 1770250083639
+41 verbose cwd D:\telegram bot habit\frontend
+42 verbose os Windows_NT 10.0.26200
+43 verbose node v24.13.0
+44 verbose npm  v11.6.2
+45 notice
+45 notice New minor version of npm available! 11.6.2 -> 11.9.0
+45 notice Changelog: https://github.com/npm/cli/releases/tag/v11.9.0
+45 notice To update run: npm install -g npm@11.9.0
+45 notice  { force: true, Symbol(proc-log.meta): true }
+46 verbose exit 1
+47 verbose code 1
+48 error A complete log of this run can be found in: d:\telegram bot habit\.npm-cache2\_logs\2026-02-05T00_08_03_030Z-debug-0.log
