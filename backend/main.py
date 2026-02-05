@@ -76,6 +76,11 @@ def on_startup() -> None:
     init_db()
 
 
+@app.get("/health")
+def health() -> dict:
+    return {"ok": True}
+
+
 @app.post("/auth/register", response_model=TokenOut)
 def register(data: RegisterIn) -> TokenOut:
     existing = fetch_one("SELECT id FROM web_users WHERE email=?", (data.email,))

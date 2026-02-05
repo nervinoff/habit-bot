@@ -5,14 +5,14 @@
 4 silly config load:file:D:\telegram bot habit\frontend\.npmrc
 5 silly config load:file:C:\Users\fqrealicy\.npmrc
 6 silly config load:file:C:\Users\fqrealicy\AppData\Roaming\npm\etc\npmrc
-7 verbose title npm exec vercel
-8 verbose argv "exec" "--" "vercel"
-9 verbose logfile logs-max:10 dir:D:\telegram bot habit\.npm-cache\_logs\2026-02-05T00_49_31_876Z-
-10 verbose logfile D:\telegram bot habit\.npm-cache\_logs\2026-02-05T00_49_31_876Z-debug-0.log
+7 verbose title npm exec vercel --prod
+8 verbose argv "exec" "--" "vercel" "--prod"
+9 verbose logfile logs-max:10 dir:D:\telegram bot habit\.npm-cache\_logs\2026-02-05T01_38_14_505Z-
+10 verbose logfile D:\telegram bot habit\.npm-cache\_logs\2026-02-05T01_38_14_505Z-debug-0.log
 11 silly logfile start cleaning logs, removing 1 files
 12 silly logfile done cleaning log files
 13 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
-14 http fetch GET 200 https://registry.npmjs.org/vercel 1355ms (cache revalidated)
+14 http fetch GET 200 https://registry.npmjs.org/vercel 869ms (cache revalidated)
 15 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
 16 verbose Could not read global path C:\Users\fqrealicy\AppData\Roaming\npm, ignoring
 17 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
