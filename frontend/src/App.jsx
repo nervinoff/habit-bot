@@ -1,12 +1,16 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import { api } from "./api.js";
 
-function GlassCard({ title, children, actions }) {
+function GlassCard({ title, children, right }) {
   return (
-    <div className="glass">
-      {title && <div className="card-title">{title}</div>}
+    <div className="glass-card">
+      {(title || right) && (
+        <div className="card-head">
+          <div className="card-title">{title}</div>
+          <div className="card-right">{right}</div>
+        </div>
+      )}
       <div className="card-body">{children}</div>
-      {actions && <div className="card-actions">{actions}</div>}
     </div>
   );
 }
@@ -38,8 +42,22 @@ export default function App() {
     end_date: "",
     reminder_time: ""
   });
+  const [pulseId, setPulseId] = useState(null);
 
+  const logoUrl = import.meta.env.VITE_LOGO_URL;
   const isLinked = !!telegramId;
+  const panels = useMemo(
+    () => [
+      { key: "home", label: "Сегодня" },
+      { key: "habits", label: "Мои" },
+      { key: "friends", label: "Друзья" },
+      { key: "stats", label: "Статистика" },
+      { key: "calendar", label: "Календарь" },
+      { key: "create", label: "Новая" }
+    ],
+    []
+  );
+  const [touchStartX, setTouchStartX] = useState(null);
 
   const loadAll = async () => {
     setLoading(true);
@@ -50,13 +68,18 @@ export default function App() {
       setFriends(fr);
       setError("");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Не удалось подключиться к серверу");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    const tg = window?.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
     const tgId = getTelegramUserId();
     if (tgId) {
       const id = String(tgId);
@@ -72,6 +95,25 @@ export default function App() {
     }
     loadAll();
   }, [isLinked]);
+
+  const onTouchStart = (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const onTouchEnd = (e) => {
+    if (touchStartX === null) return;
+    const endX = e.changedTouches && e.changedTouches[0]?.clientX;
+    if (endX == null) return;
+    const delta = endX - touchStartX;
+    if (Math.abs(delta) < 60) return;
+    const idx = panels.findIndex((p) => p.key === panel);
+    if (delta < 0 && idx < panels.length - 1) {
+      setPanel(panels[idx + 1].key);
+    } else if (delta > 0 && idx > 0) {
+      setPanel(panels[idx - 1].key);
+    }
+  };
 
   const onLinkById = async () => {
     setError("");
@@ -89,15 +131,19 @@ export default function App() {
       api.setTelegramId(tg);
       await loadAll();
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Неверный код");
     }
   };
 
   const onCreateHabit = async () => {
     setError("");
+    if (!newHabit.name.trim()) {
+      setError("Введите название привычки");
+      return;
+    }
     try {
       await api.createHabit({
-        name: newHabit.name,
+        name: newHabit.name.trim(),
         start_date: newHabit.start_date,
         end_date: newHabit.end_date || null,
         reminder_time: newHabit.reminder_time || null
@@ -111,16 +157,18 @@ export default function App() {
       await loadAll();
       setPanel("habits");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Не удалось создать привычку");
     }
   };
 
   const onCheckin = async (id) => {
+    setPulseId(`done-${id}-${Date.now()}`);
     await api.checkin(id);
     await loadAll();
   };
 
   const onSkip = async (id) => {
+    setPulseId(`skip-${id}-${Date.now()}`);
     await api.skip(id);
     await loadAll();
   };
@@ -195,11 +243,39 @@ export default function App() {
     return bars;
   };
 
+  const quickStats = useMemo(() => {
+    const done = stats?.total || 0;
+    const total = habits.length || 0;
+    return { done, total };
+  }, [stats, habits]);
+
   if (loading) {
     return (
       <div className="screen">
-        <div className="logo">Habit</div>
-        <div className="muted">Загрузка...</div>
+        <div className="hero">
+          <div className="logo-wrap">
+            {logoUrl ? (
+              <img src={logoUrl} alt="Logo" className="logo-img" />
+            ) : (
+              <div className="logo-orb" />
+            )}
+            <div className="logo-glow" />
+          </div>
+        </div>
+        <div className="loading-wrap">
+          <div className="loading-bar">
+            <span className="loading-fill" />
+          </div>
+          <div className="loading-text">Собираю твой прогресс…</div>
+          {error && (
+            <div className="error">
+              {error}
+              <div className="row">
+                <button className="ghost" onClick={loadAll}>Повторить</button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
@@ -207,8 +283,17 @@ export default function App() {
   if (!isLinked) {
     return (
       <div className="screen">
-        <div className="logo">Habit</div>
-        <GlassCard title="Подключить Telegram">
+        <div className="hero">
+          <div className="logo-wrap">
+            {logoUrl ? (
+              <img src={logoUrl} alt="Logo" className="logo-img" />
+            ) : (
+              <div className="logo-orb" />
+            )}
+            <div className="logo-glow" />
+          </div>
+        </div>
+        <GlassCard title="Подключить Telegram" right={<span className="chip">Mini App</span>}>
           <div className="field">
             <label>Код из бота</label>
             <input
@@ -242,32 +327,41 @@ export default function App() {
   return (
     <div className="screen">
       <header className="topbar">
-        <div className="logo">Habit</div>
-        <div className="badge">TG {telegramId}</div>
+        <div className="brand">
+          <div className="logo-wrap small">
+            {logoUrl ? (
+              <img src={logoUrl} alt="Logo" className="logo-img" />
+            ) : (
+              <div className="logo-orb" />
+            )}
+          </div>
+          <div className="brand-meta">
+            <div className="brand-title">Привычки</div>
+            <div className="brand-sub">TG {telegramId}</div>
+          </div>
+        </div>
+        <div className="top-actions">
+          <span className="chip">{quickStats.done} отметок</span>
+          <button className="ghost" onClick={loadAll}>Обновить</button>
+        </div>
       </header>
 
-      <nav className="tabs">
-        {[
-          { key: "home", label: "Сегодня" },
-          { key: "habits", label: "Мои" },
-          { key: "friends", label: "Друзья" },
-          { key: "stats", label: "Статистика" },
-          { key: "calendar", label: "Календарь" },
-          { key: "create", label: "Новая" }
-        ].map((t) => (
+      <nav className="dock">
+        {panels.map((t) => (
           <button
             key={t.key}
-            className={panel === t.key ? "tab active" : "tab"}
+            className={panel === t.key ? `dock-btn active dock-${t.key}` : `dock-btn dock-${t.key}`}
             onClick={() => setPanel(t.key)}
           >
-            {t.label}
+            <span className="dock-icon" aria-hidden="true" />
+            <span className="dock-label">{t.label}</span>
           </button>
         ))}
       </nav>
 
-      <div className="grid">
+      <div className={`grid panel-grid ${pulseId ? "pulse" : ""}`} key={panel} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         {panel === "home" && (
-          <GlassCard title="Сегодня">
+          <GlassCard title="Сегодня" right={<span className="chip">{habits.length} привычек</span>}>
             <div className="muted">
               Нажимай ✅, чтобы отметить, или ⏭️, чтобы пропустить.
             </div>
@@ -287,7 +381,7 @@ export default function App() {
         )}
 
         {panel === "habits" && (
-          <GlassCard title="Мои привычки">
+          <GlassCard title="Мои привычки" right={<span className="chip">{habits.length}</span>}>
             {habits.length === 0 && (
               <div className="muted">Пока нет привычек</div>
             )}
@@ -324,11 +418,10 @@ export default function App() {
         )}
 
         {panel === "stats" && (
-          <GlassCard title="Статистика">
+          <GlassCard title="Статистика" right={selected ? <span className="chip">{selected.name}</span> : null}>
             {!selected && <div className="muted">Выбери привычку</div>}
             {selected && stats && (
               <div className="stats">
-                <div className="stat-title">{selected.name}</div>
                 <div className="stat-row">Всего отметок: {stats.total}</div>
                 <div className="stat-row">
                   Выполнение: {stats.completion}%
@@ -370,7 +463,7 @@ export default function App() {
         )}
 
         {panel === "calendar" && (
-          <GlassCard title="Календарь">
+          <GlassCard title="Календарь" right={selected ? <span className="chip">{selected.name}</span> : null}>
             {!selected && <div className="muted">Выбери привычку</div>}
             {selected && (
               <>
@@ -414,7 +507,7 @@ export default function App() {
         )}
 
         {panel === "create" && (
-          <GlassCard title="Новая привычка">
+          <GlassCard title="Новая привычка" right={<span className="chip">Гибко</span>}>
             <div className="field">
               <label>Название</label>
               <input
@@ -456,6 +549,7 @@ export default function App() {
                 }
               />
             </div>
+            {error && <div className="error">{error}</div>}
             <button className="primary" onClick={onCreateHabit}>
               Создать
             </button>

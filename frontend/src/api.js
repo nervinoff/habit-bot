@@ -26,10 +26,35 @@ async function request(path, options = {}) {
   if (tg && !headers["X-Telegram-Id"]) {
     headers["X-Telegram-Id"] = tg;
   }
-  const res = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers
-  });
+  let url = `${API_URL}${path}`;
+  if (tg) {
+    const joiner = url.includes("?") ? "&" : "?";
+    url = `${url}${joiner}telegram_user_id=${encodeURIComponent(tg)}`;
+  }
+  const doFetch = async () => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+    try {
+      return await fetch(url, {
+        ...options,
+        headers,
+        signal: controller.signal
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  };
+  let res;
+  try {
+    res = await doFetch();
+  } catch (err) {
+    // Retry once on abort (Render cold start / slow wake)
+    if (err?.name === "AbortError") {
+      res = await doFetch();
+    } else {
+      throw err;
+    }
+  }
   if (!res.ok) {
     const text = await res.text();
     throw new Error(text || "Request failed");
